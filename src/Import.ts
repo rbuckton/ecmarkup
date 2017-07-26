@@ -18,7 +18,7 @@ export default class Import extends Builder {
   }
 
   static async build(spec: Spec, node: HTMLElement, root: string) {
-    const href = node.getAttribute('href');
+    const href = node.getAttribute('href') || '';
     const importPath = Path.join(root, href);
     const relativeRoot = Path.dirname(importPath);
     const imp = new Import(spec, node, importPath, relativeRoot);
@@ -26,7 +26,7 @@ export default class Import extends Builder {
 
     const html = await spec.fetch(importPath);
     const importDoc = await utils.htmlToDom(html).window.document;
-    
+
     const nodes = importDoc.body.childNodes;
     const frag = spec.doc.createDocumentFragment();
 

@@ -160,7 +160,7 @@ export default class Spec {
   public async build() {
     /*
     The Ecmarkup build process proceeds as follows:
-    
+
     1. Load biblios, making xrefs and auto-linking from external specs work
     2. Load imports by recursively inlining the import files' content into the emu-import element
     3. Generate boilerplate text
@@ -174,7 +174,7 @@ export default class Spec {
     6. Adding charset, highlighting code, etc.
     7. Add CSS & JS dependencies.
     */
-    
+
     this._log('Loading biblios...');
     await this.loadES6Biblio();
     await this.loadBiblios();
@@ -252,7 +252,7 @@ export default class Spec {
     this._xrefs.forEach(xref => {
       let entry = xref.entry;
       if (!entry || entry.namespace === "global") return;
-            
+
       if (!entry.id && entry.refId) {
         entry = this.spec.biblio.byId(entry.refId);
       }
@@ -272,7 +272,7 @@ export default class Spec {
 
       // if this is the defining nt of an emu-production, don't create a ref
       if (prod.node.parentNode!.nodeName === "EMU-PRODUCTION") return;
-      
+
       const id = `_ref_${counter++}`;
       prod.node.setAttribute('id', id);
       entry.referencingIds.push(id);
@@ -282,7 +282,7 @@ export default class Spec {
   private async buildAssets() {
     const jsContents = await concatJs();
     const cssContents = await utils.readFile(path.join(__dirname, '../css/elements.css'));
-    
+
     if (this.opts.jsOut) {
       this._log(`Writing js file to ${this.opts.jsOut}...`);
       await utils.writeFile(this.opts.jsOut, jsContents);
@@ -305,7 +305,7 @@ export default class Spec {
     } else {
       outDir = process.cwd();
     }
-    
+
     if (this.opts.jsOut) {
       const scripts = this.doc.querySelectorAll('script');
       for (let i = 0; i < scripts.length; i++) {
@@ -385,7 +385,7 @@ export default class Spec {
   private async loadBiblios() {
     this.cancellationToken.throwIfCancellationRequested();
     await Promise.all(Array.from(this.doc.querySelectorAll('emu-biblio'))
-      .map(biblio => this.loadBiblio(path.join(this.rootDir, biblio.getAttribute('href')))));
+      .map(biblio => this.loadBiblio(path.join(this.rootDir, biblio.getAttribute('href') || ''))));
   }
 
   private async loadBiblio(file: string) {
@@ -459,7 +459,7 @@ export default class Spec {
     const title = this.opts.title;
     const shortname = this.opts.shortname;
     const stage = this.opts.stage;
-    
+
     if (this.opts.copyright) {
       if (status !== 'draft' && status !== 'standard' && !this.opts.contributors) {
         utils.logWarning('Contributors not specified, skipping copyright boilerplate. Specify contributors in your frontmatter metadata.');
@@ -666,7 +666,7 @@ function walk (walker: TreeWalker, context: Context) {
     if (!context.inNoEmd) {
       // new nodes as a result of emd processing should be skipped
       context.inNoEmd = true;
-      // inNoEmd is set to true when we walk to this node 
+      // inNoEmd is set to true when we walk to this node
       let node = context.node as Node | null;
       while(node && !node.nextSibling) {
         node = node.parentNode;
@@ -692,7 +692,7 @@ function walk (walker: TreeWalker, context: Context) {
         inAlg: context.inAlg,
         currentId: context.currentId
       });
-      
+
     }
 
     return;
@@ -724,7 +724,7 @@ function walk (walker: TreeWalker, context: Context) {
   if (firstChild) {
     while (true) {
       walk(walker, context);
-      const next = walker.nextSibling(); 
+      const next = walker.nextSibling();
       if (!next) break;
     }
     walker.parentNode();
